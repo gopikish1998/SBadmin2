@@ -1,35 +1,51 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router';
+import ProductContext from './productContext';
 
 
 function EditProduct(props) {
     const [productName, setProductName] = useState("");
     const [price, setPrice] = useState("");
     const [isLoading,setLoading]=useState(false) 
+    const productContext = useContext(ProductContext)
     let history= useHistory()
-    useEffect(async () => {
-        try {
-            let product= await axios.get(`https://60efffc3f587af00179d3c2d.mockapi.io/products/${props.match.params.id}`);
-            setProductName(product.data.productName)
-            setPrice(product.data.price)
-        } catch (error) {
-            console.log(error)
-        }
-    }, [])
+    useEffect(() => {
+        let prodData=productContext.prodList[props.match.params.id - 1];
 
-    let handleSubmit=async (e)=>{
-        e.preventDefault()
-        try {
-            setLoading(true)
-            await axios.put(`https://60efffc3f587af00179d3c2d.mockapi.io/products/${props.match.params.id}`,{productName,price})
-            setLoading(false)
+        console.log(prodData)
+        setProductName(prodData.productName)
+        setPrice(prodData.price)}
+        ,[])
+        let handleSubmit=(e)=>{
+            e.preventDefault();
+            let prodData = {productName,price}
+            productContext.prodList[props.match.params.id - 1]=prodData
+            productContext.setProdList([...productContext.prodList])
             history.push("/products")
-        } catch (error) {
-            console.log(error)
-            setLoading(false)
         }
-    }
+    // useEffect(async () => {
+    //     try {
+    //         let product= await axios.get(`https://60efffc3f587af00179d3c2d.mockapi.io/products/${props.match.params.id}`);
+    //         setProductName(product.data.productName)
+    //         setPrice(product.data.price)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }, [])
+
+    // let handleSubmit=async (e)=>{
+    //     e.preventDefault()
+    //     try {
+    //         setLoading(true)
+    //         await axios.put(`https://60efffc3f587af00179d3c2d.mockapi.io/products/${props.match.params.id}`,{productName,price})
+    //         setLoading(false)
+    //         history.push("/products")
+    //     } catch (error) {
+    //         console.log(error)
+    //         setLoading(false)
+    //     }
+    // }
     return (
         <div>
             <div class="d-sm-flex align-items-center justify-content-between mb-4">

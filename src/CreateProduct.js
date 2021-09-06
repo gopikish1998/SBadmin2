@@ -1,24 +1,32 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useHistory } from 'react-router';
-
-function CreateProduct(props) {
+import ProductContext from './productContext';
+function CreateProduct() {
     const [productName, setProductName] = useState("");
     const [price, setPrice] = useState("");
+    const productContext = useContext(ProductContext)
+
     const [isLoading,setLoading]=useState(false) 
     let history = useHistory();
-    let handleSubmit= async (e)=>{
-        e.preventDefault()
-        try {
-            setLoading(true)
-            await axios.post("https://60efffc3f587af00179d3c2d.mockapi.io/products",{productName,price})
-            setLoading(false)
-            console.log({productName,price})
-            history.push("/products")
-        } catch (error) {
-            console.log(error)
-            setLoading(false)
-        }
+    // let handleSubmit= async (e)=>{
+    //     e.preventDefault()
+    //     try {
+    //         setLoading(true)
+    //         await axios.post("https://60efffc3f587af00179d3c2d.mockapi.io/products",{productName,price})
+    //         setLoading(false)
+    //         console.log({productName,price})
+    //         history.push("/products")
+    //     } catch (error) {
+    //         console.log(error)
+    //         setLoading(false)
+    //     }
+    // }
+    let handleSubmit=(e)=>{
+        e.preventDefault();
+        let prodData = {productName,price}
+        productContext.setProdList([...productContext.prodList,prodData])
+        history.push("/products")
     }
     return (
         <div>
