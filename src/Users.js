@@ -1,16 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import UserContext from './userContext';
-import { useContext } from 'react';
+import axios from 'axios';
 
 function Users() {
-    const userContext = useContext(UserContext)
-
-    let handleDelete=(index)=>{
-        let confirm = window.confirm("Do you want to delete?")
+    // const userContext = useContext(UserContext)
+    const [userData, setUserData] = useState([])
+    const [isLoading,setLoading]=useState(true) 
+    useEffect(async() => {
+        try{
+            let userData= await axios.get("https://60efffc3f587af00179d3c2d.mockapi.io/users")
+            setUserData([...userData.data])
+            setLoading(false)
+        }
+        catch(error){
+            console.log(error);
+            setLoading(false)
+        }
+        
+    }, []);
+    let handleDelete= async (id)=>{
+        let confirm = window.confirm("Are you sure do you want to delete?")
         if(confirm){
-            userContext.userList.splice(index-1,1);
-            userContext.setUserList([...userContext.userList])
+            try {
+                await axios.delete(`https://60efffc3f587af00179d3c2d.mockapi.io/users/${id}`)
+                let rowIndex = userData.findIndex(obj=>obj.id==id)
+                userData.splice(rowIndex,1);
+                setUserData([...userData])
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
     // let userData=[{
@@ -46,6 +64,7 @@ function Users() {
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
+                                {isLoading?<h1>Loading</h1>:
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
@@ -73,22 +92,22 @@ function Users() {
                                     </tfoot>
                                     <tbody>
                                         {
-                                        userContext.userList.map((obj,index)=>{
+                                        userData.map((obj)=>{
                                             return(
                                             <tr>
-                                            <td>{index+1}</td>
-                                            <td>{obj.userName}</td>
+                                            <td>{obj.id}</td>
+                                            <td>{obj.name}</td>
                                             <td>{obj.position}</td>
                                             <td>{obj.office}</td>
                                             <td>{obj.age}</td>
                                             <td>{obj.startDate}</td>
                                             <td>{obj.salary}</td>
-                                            <td><Link to={`/users/edit/${index+1}`} className="btn btn-sm btn-primary">EDIT</Link>
-                                            <button className="btn btn-sm btn-danger" onClick={()=> {handleDelete(index+1)}} >DELETE</button></td>
+                                            <td><Link to={`/users/edit/${obj.id}`} className="btn btn-sm btn-primary">EDIT</Link>
+                                            <button className="btn btn-sm btn-danger" onClick={()=> {handleDelete(obj.id)}} >DELETE</button></td>
                                         </tr>)
                                         })}
                                     </tbody>
-                                </table>
+                                </table>}
                             </div>
                         </div>
                     </div>

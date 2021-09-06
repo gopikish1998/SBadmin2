@@ -1,24 +1,39 @@
 import React from 'react';
+import axios from 'axios';
 import { useState,useContext } from 'react';
 import { useHistory } from "react-router-dom";
 import UserContext from './userContext';
 
 function Createuser() {
-    const [userName, setUserName] = useState("");
+    const [name, setUserName] = useState("");
     const [position, setPosition] = useState("");
     const [office, setOffice] = useState("");
     const [age, setAge] = useState("");
     const [startDate, setStartDate] = useState("");
     const [salary, setSalary] = useState("");
-    const userContext = useContext(UserContext);
-    let history = useHistory();
+    const [isLoading,setLoading]=useState(false) 
 
-    let handleSubmit=(e)=>{
-        e.preventDefault();
-        let userData = {userName,position,office,age,startDate,salary}
-        userContext.setUserList([...userContext.userList,userData])
-        history.push("/users")
+    // const userContext = useContext(UserContext);
+    let history = useHistory();
+    let handleSubmit= async (e)=>{
+        e.preventDefault()
+        try {
+            setLoading(true)
+            await axios.post("https://60efffc3f587af00179d3c2d.mockapi.io/users",{name,position,office, age,startDate,salary})
+            setLoading(false)
+            console.log({name,position,office, age,startDate,salary})
+            history.push("/users")
+        } catch (error) {
+            console.log(error)
+            setLoading(false)
+        }
     }
+    // let handleSubmit=(e)=>{
+    //     e.preventDefault();
+    //     let userData = {userName,position,office,age,startDate,salary}
+    //     userContext.setUserList([...userContext.userList,userData])
+    //     history.push("/users")
+    // }
     return (
         <div>
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -29,7 +44,7 @@ function Createuser() {
                     <div className="row">
                         <div className="col col-md-6">
                             <label>User Name</label>
-                            <input type="text" value={userName} required onChange={(e)=>{setUserName(e.target.value)}} className="form-control"/>
+                            <input type="text" value={name} required onChange={(e)=>{setUserName(e.target.value)}} className="form-control"/>
                         </div>
                         <div className="col col-md-6">
                             <label>Position</label>
@@ -52,7 +67,7 @@ function Createuser() {
                             <input type="text" value={salary} onChange={(e)=>{setSalary(e.target.value)}} className="form-control"/>
                         </div>
                         <div className="col col-md-12">
-                            <input type="submit" value="Submit" className="btn btn-primary mt-3"/>
+                            <input type="submit" value="Submit" className="btn btn-primary mt-3" disabled={isLoading}/>
                         </div>
                     </div>
                 </form>

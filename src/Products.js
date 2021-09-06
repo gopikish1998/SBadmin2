@@ -72,16 +72,16 @@ function Products() {
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Position</th>
+                                        <th>Product Name</th>
+                                        <th>Price</th>
                                         <th>Action</th>                                          
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Position</th>
+                                        <th>Product Name</th>
+                                        <th>Price</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>
