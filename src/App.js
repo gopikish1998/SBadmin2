@@ -15,6 +15,7 @@ import Createuser from './Createuser';
 import EditUser from './EditUser';
 import CreateProduct from './CreateProduct';
 import EditProduct from './EditProduct';
+import MyForm from './MyForm';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <div class="container-fluid">
             <Switch>
               <Route path="/" component={Dashboard} exact="true"/>
+              <Route path="/myform" component={MyForm} exact="true"/>
               <Route path="/products" component={Products} exact="true"/>
               <Route path="/create-product" component={CreateProduct} exact="true"/>
               <Route path="/products/edit/:id" component={EditProduct} exact="true"/>             
